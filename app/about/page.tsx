@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import MenuDropdown from "../components/MenuDropdown";
 
 export default function About() {
   return (
@@ -8,74 +9,11 @@ export default function About() {
       padding: "48px", 
       width: "100vw",
       position: "relative",
-      backgroundColor: "#000000",
+      backgroundColor: "#ffffff",
       minHeight: "100vh",
       margin: 0
     }}>
-      {/* Navigation - Top Right */}
-      <nav style={{
-        position: "fixed",
-        top: "clamp(24px, 4vw, 40px)",
-        right: "clamp(24px, 4vw, 40px)",
-        zIndex: 9999,
-        display: "flex",
-        flexDirection: "column",
-        gap: "clamp(12px, 2vw, 20px)",
-        alignItems: "flex-end",
-        pointerEvents: "auto"
-      }}>
-        <Link 
-          href="/work" 
-          style={{ 
-            fontSize: "clamp(14px, 1.5vw, 18px)",
-            textDecoration: "none",
-            color: "#ffffff",
-            fontFamily: "'Melodrama Light', sans-serif",
-            fontWeight: 300,
-            letterSpacing: "0.05em",
-            opacity: 0.8,
-            transition: "opacity 0.3s ease"
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = "1"}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = "0.8"}
-        >
-          Work
-        </Link>
-        <Link 
-          href="/hands" 
-          style={{ 
-            fontSize: "clamp(14px, 1.5vw, 18px)",
-            textDecoration: "none",
-            color: "#ffffff",
-            fontFamily: "'Melodrama Light', sans-serif",
-            fontWeight: 300,
-            letterSpacing: "0.05em",
-            opacity: 0.8,
-            transition: "opacity 0.3s ease"
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = "1"}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = "0.8"}
-        >
-          Hands
-        </Link>
-        <Link 
-          href="/about" 
-          style={{ 
-            fontSize: "clamp(14px, 1.5vw, 18px)",
-            textDecoration: "none",
-            color: "#ffffff",
-            fontFamily: "'Melodrama Light', sans-serif",
-            fontWeight: 300,
-            letterSpacing: "0.05em",
-            opacity: 0.8,
-            transition: "opacity 0.3s ease"
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = "1"}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = "0.8"}
-        >
-          About
-        </Link>
-      </nav>
+      <MenuDropdown textColor="#000000" />
 
       <div style={{ maxWidth: 1200, margin: "0 auto" }}>
         {/* Header */}
@@ -88,10 +26,10 @@ export default function About() {
             <h1 style={{ 
               fontSize: "clamp(32px, 5vw, 56px)", 
               margin: 0, 
-              fontFamily: "'Melodrama Light', sans-serif",
+              fontFamily: "'Manrope Light', sans-serif",
               fontWeight: 300,
               letterSpacing: "0.05em",
-              color: "#ffffff",
+              color: "#000000",
               cursor: "pointer",
               transition: "opacity 0.3s",
               display: "inline-block"
@@ -109,17 +47,17 @@ export default function About() {
           fontSize: 24, 
           fontWeight: 300, 
           marginBottom: 24,
-          fontFamily: "'Melodrama Light', sans-serif",
+          fontFamily: "'Manrope Light', sans-serif",
           letterSpacing: "0.05em",
-          color: "#ffffff"
+          color: "#000000"
         }}>About</h2>
         <div style={{ 
           fontSize: 18, 
           lineHeight: 1.6,
-          fontFamily: "'Melodrama Light', sans-serif",
+          fontFamily: "'Manrope Light', sans-serif",
           fontWeight: 300,
           letterSpacing: "0.02em",
-          color: "#ffffff"
+          color: "#000000"
         }}>
           {/* Placeholder text - replace with actual content */}
           <p style={{ marginBottom: 24 }}>

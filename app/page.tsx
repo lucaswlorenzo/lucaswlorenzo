@@ -6,12 +6,13 @@ import Link from "next/link";
 
 export default function Home() {
   const [showTitle, setShowTitle] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    // Animation duration is 2.5s, so start at 0.5s to finish at 3s
+    // Animation duration is 2.5s, so start at 0.25s to finish at 2.75s
     const timer = setTimeout(() => {
       setShowTitle(true);
-    }, 500);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, []);
@@ -43,12 +44,13 @@ export default function Home() {
             color: "#ffffff",
             textAlign: "center",
             zIndex: 100,
-            opacity: showTitle ? undefined : 0,
+            opacity: showTitle ? 1 : 0,
             cursor: "pointer",
-            transition: "opacity 0.3s"
+            filter: isHovered ? "brightness(0.3)" : "brightness(1)",
+            transition: "filter 0.3s ease"
           }}
-          onMouseEnter={(e) => e.currentTarget.style.opacity = showTitle ? "0.8" : "0"}
-          onMouseLeave={(e) => e.currentTarget.style.opacity = showTitle ? "1" : "0"}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           Lucas W. Lorenzo
         </h1>
