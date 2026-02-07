@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 
+const SCROLL_THRESHOLD = 20;
+
 const linkStyle = {
   fontSize: 'clamp(14px, 1.5vw, 18px)',
   textDecoration: 'none' as const,
-  fontFamily: "'Melodrama Light', sans-serif",
+  fontFamily: "'Manrope Light', sans-serif",
   fontWeight: 300,
   letterSpacing: '0.05em',
   opacity: 0.9,
@@ -21,7 +23,19 @@ type MenuDropdownProps = {
 
 export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleScroll() {
+      const atTop = window.scrollY <= SCROLL_THRESHOLD;
+      setIsAtTop(atTop);
+      if (!atTop) setIsOpen(false);
+    }
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -43,7 +57,9 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
         top: 'clamp(24px, 4vw, 40px)',
         right: 'clamp(24px, 4vw, 40px)',
         zIndex: 9999,
-        pointerEvents: 'auto',
+        pointerEvents: isAtTop ? 'auto' : 'none',
+        opacity: isAtTop ? 1 : 0,
+        transition: 'opacity 0.3s ease',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',

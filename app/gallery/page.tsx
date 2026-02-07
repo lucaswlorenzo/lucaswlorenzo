@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from "react";
-import Link from "next/link";
 import MenuDropdown from "../components/MenuDropdown";
+import SiteName from "../components/SiteName";
 import Footer from "../components/Footer";
 
 // Simple seeded random function for consistent randomness
@@ -84,29 +84,7 @@ export default function Gallery() {
       margin: 0
     }}>
       <MenuDropdown textColor="#000000" />
-
-      {/* Title - same size and placement as landing page */}
-      <header style={{ 
-        position: "absolute",
-        top: "clamp(32px, 6vw, 64px)",
-        left: "50%",
-        transform: "translateX(-50%)",
-        zIndex: 100,
-        margin: 0,
-        padding: 0
-      }}>
-        <h1 style={{ 
-          fontSize: "clamp(28px, 5vw, 48px)", 
-          margin: 0, 
-          fontFamily: "'Melodrama Light', sans-serif",
-          fontWeight: 300,
-          letterSpacing: "0.05em",
-          color: "#000000",
-          textAlign: "center"
-        }}>
-          Lucas W. Lorenzo
-        </h1>
-      </header>
+      <SiteName textColor="#000000" />
 
       {/* Salon-style Gallery - Max 2 per row, intentional spacing, no overlap */}
       <div style={{
@@ -114,12 +92,12 @@ export default function Gallery() {
         width: "100%",
         margin: "0 auto",
         padding: "0 clamp(24px, 3vw, 48px)",
-        paddingBottom: "clamp(40px, 5vw, 80px)"
+        paddingBottom: 0
       }}>
         <div style={{
           position: "relative",
           width: "100%",
-          minHeight: `${galleryImages.length * 780 + 800}px`
+          minHeight: `${Math.ceil(galleryImages.length / 2) * 780 + 500}px`
         }}>
           {imageLayouts.map((image, index) => {
             // Responsive frame sizes - scale from small to large based on viewport
