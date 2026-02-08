@@ -42,7 +42,7 @@ export default function About() {
             }}>
               <div>
                 <Image
-                  src="/media/About Page/headshots/lucaslorenzo_headshotportrait.png"
+                  src="/media/About Page/headshots/Lucas_Headshots_September_2025-4.png"
                   alt="Lucas W. Lorenzo"
                   width={400}
                   height={500}

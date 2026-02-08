@@ -32,7 +32,7 @@ export default function RootLayout({
         <link rel="preload" href="/media/hands/hands3.jpg" as="image" />
         <link rel="preload" href="/media/hands/hands4.jpg" as="image" />
         <link rel="preload" href="/media/hands/hands5.jpeg" as="image" />
-        <link rel="preload" href="/media/About Page/headshots/lucaslorenzo_headshotportrait.png" as="image" />
+        <link rel="preload" href="/media/About Page/headshots/Lucas_Headshots_September_2025-4.png" as="image" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

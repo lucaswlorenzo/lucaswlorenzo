@@ -14,7 +14,7 @@ const HANDS_IMAGES = [
   '/media/hands/hands5.jpeg',
 ];
 
-const ABOUT_HEADSHOT = '/media/About Page/headshots/lucaslorenzo_headshotportrait.png';
+const ABOUT_HEADSHOT = '/media/About Page/headshots/Lucas_Headshots_September_2025-4.png';
 
 function preloadHandsImages() {
   HANDS_IMAGES.forEach((src) => {
