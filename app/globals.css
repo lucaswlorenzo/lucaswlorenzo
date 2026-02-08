@@ -16,6 +16,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Manrope ExtraLight';
+  src: url('/fonts/Manrope/Manrope-ExtraLight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope Medium';
+  src: url('/fonts/Manrope/Manrope-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -35,11 +51,22 @@
   }
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100%;
+  overflow-x: hidden;
+  background: #ffffff;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
   overflow-x: hidden;
 }
 
@@ -53,6 +80,12 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* Prevent flex/grid children from overflowing parent on resize */
+main {
+  min-width: 0;
+  max-width: 100%;
 }
 
 a {
@@ -84,6 +117,25 @@ img {
   animation: menuReveal 0.3s ease-out forwards;
 }
 
+/* About page: Select Clients - wide = below both, narrow = below headshot only */
+.about-select-clients-narrow {
+  display: none;
+}
+
+.about-select-clients-wide {
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .about-select-clients-narrow {
+    display: block;
+  }
+
+  .about-select-clients-wide {
+    display: none;
+  }
+}
+
 @keyframes menuReveal {
   from {
     opacity: 0;
@@ -95,15 +147,4 @@ img {
   }
 }
 
-/* About page: push Work section down to align with headshot bottom when expanded */
-@media (min-width: 1024px) {
-  .about-body-text {
-    min-height: clamp(375px, 47.5vw, 550px);
-    display: flex;
-    flex-direction: column;
-  }
-  .about-work-heading {
-    margin-top: auto !important;
-    margin-bottom: 8px !important;
-  }
-}
+

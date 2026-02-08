@@ -29,7 +29,8 @@ const arrowStyle = {
   transition: "opacity 0.2s ease",
 };
 
-const TRANSITION_DURATION = 1300; // 600ms + 700ms for smoother fade in/out
+const TRANSITION_DURATION = 600;
+const AUTO_ADVANCE_INTERVAL = 4500;
 
 // Preload all images to prevent flash on transition
 function preloadImages() {
@@ -40,7 +41,9 @@ function preloadImages() {
 }
 
 export default function Hands() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(() =>
+    Math.floor(Math.random() * slides.length)
+  );
   const [transitionToIndex, setTransitionToIndex] = useState<number | null>(null);
   const scrollRestoreRef = useRef<number | null>(null);
 
@@ -120,7 +123,7 @@ export default function Hands() {
   });
 
   useEffect(() => {
-    const interval = setInterval(goToNext, 5000);
+    const interval = setInterval(goToNext, AUTO_ADVANCE_INTERVAL);
     return () => clearInterval(interval);
   }, [goToNext]);
 
@@ -141,31 +144,64 @@ export default function Hands() {
 
   return (
     <main style={{ 
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
       padding: "clamp(24px, 4vw, 48px)",
       paddingTop: "clamp(96px, 14vw, 140px)",
-      width: "100vw",
+      paddingLeft: "clamp(16px, 4vw, 180px)",
+      paddingRight: "clamp(16px, 4vw, 180px)",
+      width: "100%",
+      maxWidth: "100%",
       position: "relative",
       backgroundColor: "#ffffff",
-      minHeight: "100vh",
       margin: 0
     }}>
       <MenuDropdown textColor="#000000" />
       <SiteName textColor="#000000" />
 
-      <div style={{ maxWidth: 1400, margin: "0 auto", padding: "0 clamp(24px, 4vw, 48px)" }}>
-        <section style={{ marginTop: 80 }}>
+      <div style={{ flex: 1, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+        <section style={{ marginTop: 40 }}>
           <div style={{
             display: "flex",
             flexDirection: "row",
-            gap: "clamp(40px, 6vw, 80px)",
+            gap: "clamp(24px, 3vw, 40px)",
             alignItems: "flex-start",
-            flexWrap: "nowrap",
+            flexWrap: "wrap",
           }}>
-            {/* Left: Photo gallery */}
+            {/* Left: Header and description */}
             <div style={{
-              flex: "0 0 auto",
+              flex: "1 1 300px",
+              minWidth: 0,
+            }}>
+              <h2 style={{ 
+                fontSize: 24, 
+                fontWeight: 500, 
+                marginBottom: 16,
+                fontFamily: "'Manrope Medium', sans-serif",
+                letterSpacing: "0.05em",
+                color: "#000000"
+              }}>Hands</h2>
+              <p style={{ 
+                fontSize: 15, 
+                lineHeight: 1.6,
+                fontFamily: "'Manrope Light', sans-serif",
+                fontWeight: 300,
+                letterSpacing: "0.02em",
+                color: "#000000",
+                margin: 0,
+                textAlign: "justify"
+              }}>
+                These are a behind-the-scenes study of process and precision. Across these images, my hands enter the frame as I adjust garments, refine details, and shape the final silhouette—small interventions that often make the difference between "good" and finished. These show a direct look at how I work on set: attentive, tactile, and intent on visual cohesion. It's a record of the touch-ups, fixes, and micro-decisions that bring an image into alignment, revealing the care and control behind each look and the standard I hold myself to in every production.
+              </p>
+            </div>
+
+            {/* Right: Photo gallery - shifts below text when narrow */}
+            <div style={{
+              flex: "1 1 min(400px, 100%)",
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
               gap: 24,
               minWidth: 0,
             }}>
@@ -188,6 +224,7 @@ export default function Hands() {
               <div
                 style={{
                   position: "relative",
+                  width: "100%",
                   maxWidth: 700,
                   minHeight: 300,
                   lineHeight: 0,
@@ -240,33 +277,6 @@ export default function Hands() {
                   <polyline points="12 8 24 20 12 32" />
                 </svg>
               </button>
-            </div>
-
-            {/* Right: Description */}
-            <div style={{
-              flex: "1 1 300px",
-              minWidth: 0,
-            }}>
-              <h2 style={{ 
-                fontSize: 24, 
-                fontWeight: 300, 
-                marginBottom: 16,
-                fontFamily: "'Manrope Light', sans-serif",
-                letterSpacing: "0.05em",
-                color: "#000000"
-              }}>Hands</h2>
-              <p style={{ 
-                fontSize: 15, 
-                lineHeight: 1.6,
-                fontFamily: "'Manrope Light', sans-serif",
-                fontWeight: 300,
-                letterSpacing: "0.02em",
-                color: "#000000",
-                margin: 0,
-                textAlign: "justify"
-              }}>
-                These are a behind-the-scenes study of process and precision. Across these images, my hands enter the frame as I adjust garments, refine details, and shape the final silhouette—small interventions that often make the difference between "good" and finished. These show a direct look at how I work on set: attentive, tactile, and intent on visual cohesion. It's a record of the touch-ups, fixes, and micro-decisions that bring an image into alignment, revealing the care and control behind each look and the standard I hold myself to in every production.
-              </p>
             </div>
           </div>
         </section>

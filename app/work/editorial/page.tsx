@@ -8,24 +8,29 @@ import SiteName from "../../components/SiteName";
 export default function EditorialWork() {
   return (
     <main style={{ 
+      display: "flex",
+      flexDirection: "column",
+      minHeight: "100vh",
       padding: "clamp(24px, 4vw, 48px)",
       paddingTop: "clamp(96px, 14vw, 140px)",
-      width: "100vw",
+      paddingLeft: "clamp(16px, 4vw, 180px)",
+      paddingRight: "clamp(16px, 4vw, 180px)",
+      width: "100%",
+      maxWidth: "100%",
       position: "relative",
       backgroundColor: "#ffffff",
-      minHeight: "100vh",
       margin: 0
     }}>
       <MenuDropdown textColor="#000000" />
       <SiteName textColor="#000000" />
 
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <section style={{ marginTop: 80 }}>
+      <div style={{ flex: 1, maxWidth: 1200, margin: "0 auto", width: "100%" }}>
+        <section style={{ marginTop: 40 }}>
           <h2 style={{ 
             fontSize: 24, 
-            fontWeight: 300, 
+            fontWeight: 500, 
             marginBottom: 24,
-            fontFamily: "'Manrope Light', sans-serif",
+            fontFamily: "'Manrope Medium', sans-serif",
             letterSpacing: "0.05em",
             color: "#000000"
           }}>Editorial & Campaign</h2>

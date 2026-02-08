@@ -5,179 +5,120 @@ import MenuDropdown from "../components/MenuDropdown";
 import SiteName from "../components/SiteName";
 import Footer from "../components/Footer";
 
-// Simple seeded random function for consistent randomness
+// Seeded random for consistent layout
 function seededRandom(seed: number) {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
-// Consistent aspect ratio for all frames (3:4 portrait)
-const FRAME_ASPECT_RATIO = 3 / 4;
-
-// Multiple size variants for variety (maintaining 3:4 aspect ratio)
-const SIZE_VARIANTS = [
-  { baseWidth: 260, label: 'xsmall' },
-  { baseWidth: 300, label: 'small' },
-  { baseWidth: 320, label: 'medium-small' },
-  { baseWidth: 340, label: 'medium' },
-  { baseWidth: 380, label: 'medium-large' },
-  { baseWidth: 420, label: 'large' }
+// Salon-style: mix of shapes - keep ratios close to minimize height variation for even gaps
+const ASPECT_RATIOS = [
+  { w: 1, h: 1 },      // square
+  { w: 3, h: 4 },      // portrait
+  { w: 4, h: 3 },      // landscape
+  { w: 5, h: 4 },      // subtle portrait
+  { w: 4, h: 5 },      // subtle landscape
+  { w: 5, h: 6 },
+  { w: 6, h: 5 },
 ];
 
-// Placeholder for gallery images - all same crop, limited size variation
+const GAP = 14;
+
+// Placeholder for gallery images
 const galleryImages = Array.from({ length: 20 }, (_, i) => ({ id: i + 1 }));
 
 export default function Gallery() {
-  // Pre-calculate layout values for each image to keep them consistent
-  const imageLayouts = useMemo(() => {
-    const spacings = [20, 24, 28, 32, 36, 40]; // Spacing variation
-    return galleryImages.map((image, index) => {
-      const seed = index * 17 + image.id * 23; // Create unique seed per image
-      
-      // Assign one of 3 size variants
-      const sizeVariant = SIZE_VARIANTS[Math.floor(seededRandom(seed) * SIZE_VARIANTS.length)];
-      const baseWidth = sizeVariant.baseWidth;
-      const baseHeight = baseWidth / FRAME_ASPECT_RATIO;
-      
-      // Spacing and positioning - brick pattern (alternating columns)
-      const randomSpacing = [24, 28, 32, 36, 40, 44]; // Spacing variation
-      const randomSpacingValue = randomSpacing[Math.floor(seededRandom(seed + 1) * randomSpacing.length)];
-      
-      // Brick pattern: alternate between left and right columns
-      // Column 0 = left, Column 1 = right
-      const column = index % 2;
-      
-      // Horizontal positions for brick pattern - with edge margins
-      // Current gap between columns: 87% - 8% = 79%
-      // Reduce gap by 75% = keep 25% = 79% * 0.25 = ~20% gap between column centers
-      // Left column: 8% (leaves ~5% margin from left edge)
-      // Right column: 28% (20% gap from left, leaves plenty of margin on right for navigation)
-      const horizontalPositionPercent = column === 0 ? 8 : 28;
-      
-      // Vertical offset variation - allows images to overlap vertically (horizontal lines intersect both)
-      // More variation to break checkerboard pattern while keeping images in proper sequence
-      const randomVerticalOffset = Math.floor(seededRandom(seed + 3) * 100) - 50; // Moderate stagger (-50 to 50px) for overlap
-      const randomRotation = (seededRandom(seed + 4) - 0.5) * 0.6; // Rotation for organic feel
-      
-      return {
-        ...image,
-        baseWidth,
-        baseHeight,
-        randomSpacing: randomSpacingValue,
-        horizontalPositionPercent,
-        randomVerticalOffset,
-        randomRotation,
-        column,
-        index
-      };
-    });
-  }, [galleryImages]);
+  const frameLayouts = useMemo(() => {
+    const ratios = ASPECT_RATIOS.map((r) => `${r.w} / ${r.h}`);
+    const layouts: { id: number; aspectRatio: string; index: number }[] = [];
+    const usedInRightCol: string[] = [];
+    const usedInLeftCol: string[] = [];
+
+    for (let i = 0; i < galleryImages.length; i++) {
+      const col = i % 2;
+      const usedInCol = col === 0 ? usedInLeftCol : usedInRightCol;
+
+      const forbidden = new Set<string>();
+      if (i >= 1) forbidden.add(layouts[i - 1].aspectRatio);
+      if (i >= 2) forbidden.add(layouts[i - 2].aspectRatio);
+      usedInCol.forEach((r) => forbidden.add(r));
+
+      const available = ratios.filter((r) => !forbidden.has(r));
+      const pool = available.length > 0 ? available : ratios;
+
+      const seed = i * 17 + galleryImages[i].id * 23;
+      const pick = Math.floor(seededRandom(seed) * pool.length);
+      const chosen = pool[pick];
+
+      usedInCol.push(chosen);
+
+      layouts.push({
+        id: galleryImages[i].id,
+        aspectRatio: chosen,
+        index: i,
+      });
+    }
+    return layouts;
+  }, []);
 
   return (
     <main style={{ 
-      backgroundColor: "#ffffff",
+      display: "flex",
+      flexDirection: "column",
       minHeight: "100vh",
-      width: "100vw",
+      backgroundColor: "#ffffff",
+      width: "100%",
+      maxWidth: "100%",
       position: "relative",
       padding: "clamp(24px, 4vw, 48px)",
       paddingTop: "clamp(96px, 14vw, 140px)",
+      paddingLeft: "clamp(140px, 10vw, 180px)",
+      paddingRight: "clamp(140px, 10vw, 180px)",
       margin: 0
     }}>
-      <MenuDropdown textColor="#000000" />
+      <MenuDropdown textColor="#000000" hideOnScroll={false} />
       <SiteName textColor="#000000" />
 
-      {/* Salon-style Gallery - Max 2 per row, intentional spacing, no overlap */}
       <div style={{
-        position: "relative",
-        width: "100%",
+        flex: 1,
+        maxWidth: 1200,
         margin: "0 auto",
-        padding: "0 clamp(24px, 3vw, 48px)",
-        paddingBottom: 0
+        marginTop: 40,
+        width: "100%",
       }}>
         <div style={{
-          position: "relative",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          columnGap: GAP,
+          rowGap: GAP,
           width: "100%",
-          minHeight: `${Math.ceil(galleryImages.length / 2) * 780 + 500}px`
         }}>
-          {imageLayouts.map((image, index) => {
-            // Responsive frame sizes - scale from small to large based on viewport
-            // Calculate size multiplier based on baseWidth relative to smallest (260px)
-            const sizeMultiplier = image.baseWidth / 260;
-            // Base responsive width: scales based on size variant - LARGER to fill extended space
-            // Formula: clamp(min, preferred (vw-based), max)
-            const minWidth = Math.round(280 + (sizeMultiplier - 1) * 60); // Larger min based on variant
-            const maxWidth = Math.round(400 + (sizeMultiplier - 1) * 300); // 400-700px range (much larger)
-            const vwPreferred = Math.round(28 + sizeMultiplier * 6); // Larger vw values
-            const responsiveBaseWidth = `clamp(${minWidth}px, ${vwPreferred}vw, ${maxWidth}px)`;
-            
-            // Calculate padding to account for hover scale (1.05 = 5% increase)
-            // Use a percentage-based padding that scales with the frame size
-            const hoverPaddingScale = `clamp(12px, 2vw, 30px)`;
-            
-            // Alternating columns with overlapping vertical space
-            // Images should overlap vertically so horizontal lines always intersect both columns
-            // Calculate frame index within its column (0, 1, 2, 3... for left and right)
-            const columnIndex = Math.floor(index / 2);
-            
-            // Base spacing between same-column images - must prevent touching even with variations
-            // Largest frame: ~560px height (420px/0.75), + max padding 60px = ~620px total height
-            // With hover scale (5%): +31px = ~651px effective height
-            // With ±50px random offset, need spacing to ensure no touch even in worst case
-            // Spacing needed: 651px (frame with hover) + 50px (max negative offset) + 80px (safety) = ~780px
-            // Use 780px base spacing to ensure frames never touch
-            const baseVerticalSpacing = 780;
-            
-            // Left column starts at 0, right column starts with offset to create overlap
-            // Offset allows vertical overlap while maintaining safe horizontal separation (25% vs 75%)
-            const columnOffset = image.column === 0 ? 0 : 400;
-            
-            // Calculate vertical position: column offset + (column index * spacing) + variation
-            // The randomVerticalOffset creates the overlap so horizontal lines intersect both columns
-            // Base spacing of 750px ensures no touching even with ±50px random offset variation
-            const verticalPosition = columnOffset + (columnIndex * baseVerticalSpacing) + image.randomVerticalOffset;
-            
+          {frameLayouts.map((frame) => {
+            const isFirstRowRight = frame.index === 1;
             return (
               <div
-                key={image.id}
+                key={frame.id}
                 style={{
-                  position: "absolute",
-                  left: `${image.horizontalPositionPercent}%`,
-                  top: `${verticalPosition}px`,
-                  padding: hoverPaddingScale,
-                  boxSizing: "border-box",
-                  transform: "translateX(-50%)",
-                  zIndex: index
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: 0,
+                  marginTop: isFirstRowRight ? "12%" : 0,
                 }}
               >
                 <div
                   style={{
-                    width: responsiveBaseWidth,
-                    aspectRatio: `${FRAME_ASPECT_RATIO}`,
-                    position: "relative",
-                    overflow: "visible",
-                    cursor: "pointer",
-                    transform: `rotate(${image.randomRotation}deg)`,
-                    transformOrigin: "center center",
-                    transition: "transform 0.4s ease, opacity 0.3s ease, box-shadow 0.3s ease",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                    width: "100%",
+                    aspectRatio: frame.aspectRatio,
                     backgroundColor: "#000000",
-                    border: "8px solid #000000",
+                    transition: "opacity 0.3s ease, box-shadow 0.3s ease",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = `rotate(${image.randomRotation * 0.5}deg) scale(1.05)`;
-                    e.currentTarget.style.opacity = "0.95";
-                    e.currentTarget.style.boxShadow = "0 8px 24px rgba(0, 0, 0, 0.2)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = `rotate(${image.randomRotation}deg) scale(1)`;
-                    e.currentTarget.style.opacity = "1";
-                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.15)";
+                    justifyContent: "center",
                   }}
                 >
-                  {/* White frame placeholder */}
+                  {/* Placeholder for media content */}
                 </div>
               </div>
             );

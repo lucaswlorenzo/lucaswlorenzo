@@ -2,8 +2,33 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const SCROLL_THRESHOLD = 20;
+
+const HANDS_IMAGES = [
+  '/media/hands/hands1.jpg',
+  '/media/hands/hands2.jpg',
+  '/media/hands/hands3.jpg',
+  '/media/hands/hands4.jpg',
+  '/media/hands/hands5.jpeg',
+];
+
+const ABOUT_HEADSHOT = '/media/About Page/headshots/lucaslorenzo_headshotportrait.png';
+
+function preloadHandsImages() {
+  HANDS_IMAGES.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
+function preloadAboutHeadshot() {
+  const img = new Image();
+  img.src = ABOUT_HEADSHOT;
+}
+
+const MENU_CLOSE_DURATION = 380;
 
 const linkStyle = {
   fontSize: 'clamp(14px, 1.5vw, 18px)',
@@ -19,14 +44,38 @@ const linkStyle = {
 
 type MenuDropdownProps = {
   textColor?: string;
+  hideOnScroll?: boolean; /* true = hide when scrolled (default); false = stay visible on home/gallery */
 };
 
-export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProps) {
+export default function MenuDropdown({ textColor = '#000000', hideOnScroll = true }: MenuDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isAtTop, setIsAtTop] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const navTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isNavigatingRef = useRef(false);
 
   useEffect(() => {
+    return () => {
+      if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    };
+  }, []);
+
+  const handleLinkClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (isNavigatingRef.current) return;
+    isNavigatingRef.current = true;
+    setIsOpen(false);
+    if (navTimeoutRef.current) clearTimeout(navTimeoutRef.current);
+    navTimeoutRef.current = setTimeout(() => {
+      navTimeoutRef.current = null;
+      isNavigatingRef.current = false;
+      router.push(href);
+    }, MENU_CLOSE_DURATION);
+  };
+
+  useEffect(() => {
+    if (!hideOnScroll) return;
     function handleScroll() {
       const atTop = window.scrollY <= SCROLL_THRESHOLD;
       setIsAtTop(atTop);
@@ -35,7 +84,7 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [hideOnScroll]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -57,8 +106,8 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
         top: 'clamp(24px, 4vw, 40px)',
         right: 'clamp(24px, 4vw, 40px)',
         zIndex: 9999,
-        pointerEvents: isAtTop ? 'auto' : 'none',
-        opacity: isAtTop ? 1 : 0,
+        pointerEvents: hideOnScroll && !isAtTop ? 'none' : 'auto',
+        opacity: hideOnScroll && !isAtTop ? 0 : 1,
         transition: 'opacity 0.3s ease',
         display: 'flex',
         flexDirection: 'column',
@@ -157,7 +206,7 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
             onMouseLeave={(e) => {
               e.currentTarget.style.opacity = '0.9';
             }}
-            onClick={() => setIsOpen(false)}
+            onClick={(e) => handleLinkClick(e, '/work')}
           >
             Work
           </Link>
@@ -166,11 +215,12 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
             style={{ ...linkStyle, color: textColor }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = '1';
+              preloadHandsImages();
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.opacity = '0.9';
             }}
-            onClick={() => setIsOpen(false)}
+            onClick={(e) => handleLinkClick(e, '/hands')}
           >
             Hands
           </Link>
@@ -179,11 +229,12 @@ export default function MenuDropdown({ textColor = '#000000' }: MenuDropdownProp
             style={{ ...linkStyle, color: textColor }}
             onMouseEnter={(e) => {
               e.currentTarget.style.opacity = '1';
+              preloadAboutHeadshot();
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.opacity = '0.9';
             }}
-            onClick={() => setIsOpen(false)}
+            onClick={(e) => handleLinkClick(e, '/about')}
           >
             About
           </Link>

@@ -30,9 +30,9 @@ const linkBase = {
   margin: 0,
   border: 'none',
   background: 'none',
-  fontFamily: "'Melodrama Light', sans-serif",
+  fontFamily: "'Manrope ExtraLight', sans-serif",
   fontSize: 14,
-  fontWeight: 300,
+  fontWeight: 200,
   letterSpacing: '0.02em',
   color: '#000000',
   cursor: 'pointer',
@@ -76,13 +76,15 @@ export default function Footer() {
   return (
     <footer
       style={{
-        marginTop: 100,
+        marginTop: "auto",
+        flexShrink: 0,
+        paddingTop: 100,
         paddingBottom: 48,
         textAlign: 'center',
         fontSize: 14,
         color: '#000000',
-        fontFamily: "'Melodrama Light', sans-serif",
-        fontWeight: 300,
+        fontFamily: "'Manrope ExtraLight', sans-serif",
+        fontWeight: 200,
       }}
     >
       <div
@@ -91,8 +93,8 @@ export default function Footer() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '8px 0',
+          flexWrap: 'nowrap',
+          gap: 0,
         }}
       >
         <a

@@ -5,9 +5,9 @@ import Link from "next/link";
 
 const SITE_NAME_STYLES = {
   position: "absolute" as const,
-  top: "clamp(24px, 4vw, 40px)",
+  top: "calc(clamp(24px, 4vw, 40px) + 16px)",
   left: "50%",
-  transform: "translateX(-50%)",
+  transform: "translate(-50%, -50%)",
   zIndex: 100,
   fontSize: "clamp(28px, 5vw, 48px)",
   margin: 0,
