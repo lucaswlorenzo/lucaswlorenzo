@@ -30,7 +30,7 @@ const arrowStyle = {
 };
 
 const TRANSITION_DURATION = 600;
-const AUTO_ADVANCE_INTERVAL = 4500;
+const AUTO_ADVANCE_INTERVAL = 3500;
 
 // Preload all images to prevent flash on transition
 function preloadImages() {
